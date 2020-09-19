@@ -1,0 +1,7 @@
+# 默认实现的不再重复配置
+# port: 5672
+# username: guest
+# password: guest
+spring:
+  rabbitmq:
+    host: myserver
