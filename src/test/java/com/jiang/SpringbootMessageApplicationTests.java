@@ -35,7 +35,6 @@ class SpringbootMessageApplicationTests {
     void directSendMsg(){
         // Message 需要自己构造一个；定义消息体内容和消息头
         // rabbitTemplate.send(exchage, routeKey, message);
-
         Person person = new Person(1, "test", 20);
         // object默认当成消息体，只需要传入要发送的对象， 自动序列化发送给 rabbitmq；
         // 序列化默认使用的是 JAVA的序列化机制

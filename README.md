@@ -174,3 +174,79 @@ public RabbitTemplateConfigurer rabbitTemplateConfigurer(RabbitProperties proper
     return configurer;
 }
 ```
+
+## 五、@RabbitListener 和 @EnableRabbit
+
+@EnableRabbit 启用监听事件
+
+@RabbitListener 实现对消息队列的监听
+
+### 具体实现
+
+1. 在启动类上添加注解 @EnableRabbit
+
+2. 在服务层方法上使用注解 @RabbitListener 实现监听
+
+具体代码实现如下:
+
+使用 @EnableRabbit 
+```java
+package com.jiang;
+
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@EnableRabbit
+@SpringBootApplication
+public class SpringbootMessageApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringbootMessageApplication.class, args);
+    }
+
+}
+```
+
+使用 @RabbitListener
+
+```java
+package com.jiang.service;
+
+import com.jiang.entity.Person;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author shijiang.luo
+ * @description
+ * @date 2020-09-19 21:10
+ */
+@Service
+public class PersonService {
+
+    /**
+    * 
+    * 不需要获取消息头方式
+    * 
+    * @param person
+    */
+    @RabbitListener(queues = {"atme.news"})
+    public void receive(Person person){
+        System.out.println("接收到消息: " + person);
+    }
+
+    /**
+    * 
+    * 消息头信息获取方式
+    * 
+    * @param message
+    */
+    @RabbitListener(queues = "test.news")
+    public void receive(Message message) {
+        System.out.println("header: " + message.getMessageProperties());
+        System.out.println("body: " + message.getBody());
+    }
+}
+```
