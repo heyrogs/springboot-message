@@ -250,3 +250,56 @@ public class PersonService {
     }
 }
 ```
+
+
+## 六、 AmqpAdmin 
+
+AmqpAdmin： 可以用来创建和删除 Queue，Exchange， Binding 
+
+具体代码如下:
+
+```java
+package com.jiang;
+
+import com.jiang.entity.Person;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
+
+@Slf4j
+@SpringBootTest
+class SpringbootMessageApplicationTests {
+
+    @Resource
+    AmqpAdmin amqpAdmin;
+   
+    @Test
+    void createExchange(){
+        amqpAdmin.declareExchange(new DirectExchange("amqpadmin.exchange"));
+        log.info("exchange创建完成");
+    }
+
+    @Test
+    void createQueue(){
+        amqpAdmin.declareQueue(new Queue("amqpadmin.queue", true));
+        log.info("queue创建完成");
+    }
+
+    @Test
+    void binding(){
+        amqpAdmin.declareBinding(
+                new Binding("amqpadmin.queue", Binding.DestinationType.QUEUE,
+                        "amqpadmin.exchange", "amqp.haha", null));
+        log.info("binding成功");
+    }
+
+
+}
+```
+

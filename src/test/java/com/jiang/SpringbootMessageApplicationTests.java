@@ -3,13 +3,14 @@ package com.jiang;
 import com.jiang.entity.Person;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @SpringBootTest
@@ -21,6 +22,8 @@ class SpringbootMessageApplicationTests {
 
     @Resource
     RabbitTemplate rabbitTemplate;
+    @Resource
+    AmqpAdmin amqpAdmin;
 
     @Test
     void contextLoads() {
@@ -64,5 +67,26 @@ class SpringbootMessageApplicationTests {
         rabbitTemplate.convertAndSend(EXCHANGE_FANOUT, "", new Person(2, "fanout", 25));
         log.info("fanout send success.");
     }
+
+    @Test
+    void createExchange(){
+        amqpAdmin.declareExchange(new DirectExchange("amqpadmin.exchange"));
+        log.info("exchange创建完成");
+    }
+
+    @Test
+    void createQueue(){
+        amqpAdmin.declareQueue(new Queue("amqpadmin.queue", true));
+        log.info("queue创建完成");
+    }
+
+    @Test
+    void binding(){
+        amqpAdmin.declareBinding(
+                new Binding("amqpadmin.queue", Binding.DestinationType.QUEUE,
+                        "amqpadmin.exchange", "amqp.haha", null));
+        log.info("binding成功");
+    }
+
 
 }
